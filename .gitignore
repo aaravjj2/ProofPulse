@@ -69,3 +69,5 @@ credentials.json
 
 # Windows Zone.Identifier files
 *:Zone.Identifier
+*.Identifier
+*:Zone.Identifier
