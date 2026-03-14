@@ -6,6 +6,7 @@ import asyncio
 import base64
 import time
 import uuid
+from typing import Any
 
 import structlog
 from fastapi import APIRouter, HTTPException, UploadFile, File
@@ -88,7 +89,9 @@ async def analyze_image(file: UploadFile = File(...)):
 
     extracted_text, ocr_confidence = await extract_text_from_image(contents)
     if not extracted_text.strip():
-        raise HTTPException(status_code=422, detail="Could not extract text from image.")
+        raise HTTPException(
+            status_code=422, detail="Could not extract text from image."
+        )
 
     prompt = image_prompt(extracted_text)
     result = await analyze_content(prompt)
@@ -133,7 +136,9 @@ async def analyze_url_endpoint(request: URLAnalysisRequest):
     # Merge URL scanner score with LLM score
     url_risk = url_signals.get("risk_score", 0)
     if url_risk > result["risk_score"]:
-        result["risk_score"] = min(100, (result["risk_score"] + url_risk) // 2 + url_risk // 4)
+        result["risk_score"] = min(
+            100, (result["risk_score"] + url_risk) // 2 + url_risk // 4
+        )
         result["risk_level"] = _score_to_level(result["risk_score"])
 
     latency = int((time.time() - start) * 1000)
@@ -171,7 +176,7 @@ async def analyze_scenario(request: ScenarioAnalysisRequest):
     analysis_id = str(uuid.uuid4())
 
     # Run applicable services concurrently
-    tasks = []
+    tasks: list[tuple[str, Any]] = []
     ocr_text = None
     url_signals = None
 
@@ -182,7 +187,7 @@ async def analyze_scenario(request: ScenarioAnalysisRequest):
     if request.url:
         tasks.append(("url", analyze_url(request.url)))
 
-    results = {}
+    results: dict[str, Any] = {}
     if tasks:
         gathered = await asyncio.gather(*(t[1] for t in tasks), return_exceptions=True)
         for (label, _), result in zip(tasks, gathered):
@@ -195,17 +200,17 @@ async def analyze_scenario(request: ScenarioAnalysisRequest):
         url_signals = results["url"]
 
     prompt = scenario_prompt(request.text, request.url, ocr_text, request.context)
-    result = await analyze_content(prompt)
+    llm_result: dict[str, Any] = await analyze_content(prompt)
 
     # Merge URL signals if available
     if url_signals:
         url_risk = url_signals.get("risk_score", 0)
         if url_risk > 30:
-            result["risk_score"] = min(100, max(result["risk_score"], url_risk))
-            result["risk_level"] = _score_to_level(result["risk_score"])
+            llm_result["risk_score"] = min(100, max(llm_result["risk_score"], url_risk))
+            llm_result["risk_level"] = _score_to_level(llm_result["risk_score"])
 
     latency = int((time.time() - start) * 1000)
-    result["latency_ms"] = latency
+    llm_result["latency_ms"] = latency
 
     raw_input = request.text or request.url or ""
 
@@ -214,22 +219,24 @@ async def analyze_scenario(request: ScenarioAnalysisRequest):
         input_type="scenario",
         raw_input=raw_input[:500] if raw_input else None,
         extracted_text=ocr_text,
-        risk_score=result["risk_score"],
-        risk_level=result["risk_level"],
-        verdict=result["verdict"],
-        evidence=result["evidence"],
-        recommendations=result["recommendations"],
-        next_steps=result["next_steps"],
-        confidence=result["confidence"],
-        model_used=result["model_used"],
+        risk_score=llm_result["risk_score"],
+        risk_level=llm_result["risk_level"],
+        verdict=llm_result["verdict"],
+        evidence=llm_result["evidence"],
+        recommendations=llm_result["recommendations"],
+        next_steps=llm_result["next_steps"],
+        confidence=llm_result["confidence"],
+        model_used=llm_result["model_used"],
         latency_ms=latency,
     )
 
     return AnalysisResponse(
         analysis_id=analysis_id,
         input_type="scenario",
-        **{k: v for k, v in result.items() if k not in ("model_used", "latency_ms")},
-        model_used=result["model_used"],
+        **{
+            k: v for k, v in llm_result.items() if k not in ("model_used", "latency_ms")
+        },
+        model_used=llm_result["model_used"],
         latency_ms=latency,
     )
 

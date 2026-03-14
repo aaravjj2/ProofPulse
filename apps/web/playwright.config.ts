@@ -17,7 +17,7 @@ export default defineConfig({
   ],
   webServer: [
     {
-      command: "cd ../api && OPENAI_API_KEY=test-key uvicorn src.main:app --port 8001",
+      command: "cd ../api && OPENAI_API_KEY=test-key python -m uvicorn src.main:app --port 8001",
       url: "http://localhost:8001/api/v1/health",
       reuseExistingServer: true,
       timeout: 30000,

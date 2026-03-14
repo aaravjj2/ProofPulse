@@ -95,7 +95,8 @@ async def get_history(
         count_cursor = await db.execute(
             f"SELECT COUNT(*) FROM analyses {where}", params
         )
-        total = (await count_cursor.fetchone())[0]
+        count_row = await count_cursor.fetchone()
+        total: int = count_row[0] if count_row is not None else 0
 
         offset = (page - 1) * per_page
         cursor = await db.execute(
@@ -134,6 +135,14 @@ async def get_stats() -> dict:
         )
         day_rows = await day_cursor.fetchall()
         by_day = {r[0]: r[1] for r in day_rows}
+
+        if row is None:
+            return {
+                "total_analyses": 0,
+                "avg_risk_score": 0.0,
+                "scam_rate_pct": 0.0,
+                "analyses_by_day": by_day,
+            }
 
         return {
             "total_analyses": row[0],
@@ -188,7 +197,11 @@ async def save_feedback(
                 datetime.utcnow().isoformat(),
                 rating,
                 comment,
-                1 if was_actually_scam is True else (0 if was_actually_scam is False else None),
+                (
+                    1
+                    if was_actually_scam is True
+                    else (0 if was_actually_scam is False else None)
+                ),
             ),
         )
         await db.commit()

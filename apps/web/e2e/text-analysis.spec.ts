@@ -41,7 +41,7 @@ test.describe("Text Analysis", () => {
     );
 
     await expect(analyzer.resultCard).toBeVisible({ timeout: 10000 });
-    await expect(analyzer.riskBadge).toContainText("HIGH");
+    await expect(analyzer.riskBadge).toContainText("High Risk");
     await expect(analyzer.verdictText).toBeVisible();
     await expect(analyzer.evidenceSection).toBeVisible();
   });
@@ -70,7 +70,7 @@ test.describe("Text Analysis", () => {
     await analyzer.goto();
     await analyzer.analyzeText("Hey, want to grab lunch tomorrow?");
 
-    await expect(analyzer.riskBadge).toContainText("SAFE");
+    await expect(analyzer.riskBadge).toContainText("Safe");
   });
 
   test("feedback widget visible after analysis", async ({ page }) => {

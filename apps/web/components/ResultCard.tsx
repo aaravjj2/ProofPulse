@@ -78,7 +78,7 @@ export default function ResultCard({ result }: ResultCardProps) {
                 BADGE_STYLES[result.risk_level],
               )}
             >
-              {result.risk_level}
+              {RISK_LABELS[result.risk_level]}
             </span>
             <p className="text-sm text-gray-500 mt-1">
               {Math.round(result.confidence * 100)}% confidence

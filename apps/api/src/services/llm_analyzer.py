@@ -9,7 +9,6 @@ import structlog
 from openai import AsyncOpenAI, APIError, RateLimitError
 
 from ..config import settings
-from ..models import AnalysisResponse, EvidenceItem
 from ..prompts.system_prompt import SYSTEM_PROMPT
 
 logger = structlog.get_logger()
@@ -76,7 +75,8 @@ async def analyze_content(prompt: str) -> dict:
             logger.warning("llm_rate_limit", attempt=attempt)
             last_error = e
             import asyncio
-            await asyncio.sleep(2 ** attempt)
+
+            await asyncio.sleep(2**attempt)
 
         except APIError as e:
             logger.error("llm_api_error", error=str(e))
@@ -111,12 +111,18 @@ def _validate_and_normalize(result: dict, latency_ms: int, model: str) -> dict:
     evidence = []
     for item in result.get("evidence", []):
         if isinstance(item, dict) and "label" in item and "value" in item:
-            evidence.append({
-                "label": str(item["label"]),
-                "value": str(item["value"]),
-                "weight": max(0.0, min(1.0, float(item.get("weight", 0.5)))),
-                "flag": item.get("flag", "yellow") if item.get("flag") in ("red", "yellow", "green") else "yellow",
-            })
+            evidence.append(
+                {
+                    "label": str(item["label"]),
+                    "value": str(item["value"]),
+                    "weight": max(0.0, min(1.0, float(item.get("weight", 0.5)))),
+                    "flag": (
+                        item.get("flag", "yellow")
+                        if item.get("flag") in ("red", "yellow", "green")
+                        else "yellow"
+                    ),
+                }
+            )
 
     # Clamp confidence
     confidence = max(0.0, min(1.0, float(result.get("confidence", 0.7))))
@@ -153,60 +159,85 @@ def _fallback_analysis(prompt: str) -> dict:
     evidence = []
 
     # Simple heuristic scoring
-    urgency_words = ["urgent", "immediately", "act now", "expires", "suspended", "locked"]
+    urgency_words = [
+        "urgent",
+        "immediately",
+        "act now",
+        "expires",
+        "suspended",
+        "locked",
+    ]
     for word in urgency_words:
         if word in text:
             score += 15
-            evidence.append({
-                "label": "Urgency language",
-                "value": f"Contains '{word}' — a common pressure tactic",
-                "weight": 0.7,
-                "flag": "red",
-            })
+            evidence.append(
+                {
+                    "label": "Urgency language",
+                    "value": f"Contains '{word}' — a common pressure tactic",
+                    "weight": 0.7,
+                    "flag": "red",
+                }
+            )
 
-    financial_words = ["password", "ssn", "credit card", "bank account", "wire transfer", "gift card", "bitcoin"]
+    financial_words = [
+        "password",
+        "ssn",
+        "credit card",
+        "bank account",
+        "wire transfer",
+        "gift card",
+        "bitcoin",
+    ]
     for word in financial_words:
         if word in text:
             score += 20
-            evidence.append({
-                "label": "Credential/financial request",
-                "value": f"Requests '{word}' — a high-risk indicator",
-                "weight": 0.85,
-                "flag": "red",
-            })
+            evidence.append(
+                {
+                    "label": "Credential/financial request",
+                    "value": f"Requests '{word}' — a high-risk indicator",
+                    "weight": 0.85,
+                    "flag": "red",
+                }
+            )
 
     suspicious_links = [".tk", ".ru/", ".xyz/", "verify-account", "amaz0n", "paypa1"]
     for link in suspicious_links:
         if link in text:
             score += 20
-            evidence.append({
-                "label": "Suspicious link pattern",
-                "value": f"Contains '{link}' — commonly used in phishing",
-                "weight": 0.9,
-                "flag": "red",
-            })
+            evidence.append(
+                {
+                    "label": "Suspicious link pattern",
+                    "value": f"Contains '{link}' — commonly used in phishing",
+                    "weight": 0.9,
+                    "flag": "red",
+                }
+            )
 
     safe_indicators = ["unsubscribe", "privacy policy", "terms of service"]
     for indicator in safe_indicators:
         if indicator in text:
             score -= 10
-            evidence.append({
-                "label": "Legitimacy signal",
-                "value": f"Contains '{indicator}'",
-                "weight": 0.3,
-                "flag": "green",
-            })
+            evidence.append(
+                {
+                    "label": "Legitimacy signal",
+                    "value": f"Contains '{indicator}'",
+                    "weight": 0.3,
+                    "flag": "green",
+                }
+            )
 
     score = max(0, min(100, score))
     level = _score_to_level(score)
 
     if not evidence:
-        evidence.append({
-            "label": "No clear indicators",
-            "value": "No strong scam or legitimacy signals detected",
-            "weight": 0.3,
-            "flag": "yellow" if score > 20 else "green",
-        })
+        evidence.append(
+            {
+                "label": "No clear indicators",
+                "value": "No strong scam or legitimacy signals detected",
+                "weight": 0.3,
+                "flag": "yellow" if score > 20 else "green",
+            }
+        )
 
     recommendations = []
     if score >= 60:
@@ -250,7 +281,9 @@ def _generate_verdict(score: int, level: str) -> str:
     if level == "CRITICAL":
         return "This content shows strong scam/phishing patterns. Do not engage."
     if level == "HIGH":
-        return "This content contains multiple scam indicators. Exercise extreme caution."
+        return (
+            "This content contains multiple scam indicators. Exercise extreme caution."
+        )
     if level == "MEDIUM":
         return "This content has some suspicious elements. Verify before taking action."
     if level == "LOW":

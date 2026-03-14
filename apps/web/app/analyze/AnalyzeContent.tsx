@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useSearchParams } from "next/navigation";
 import type { AnalysisResponse, InputMode } from "@/lib/types";
 import { DEMO_SCENARIOS } from "@/lib/constants";
@@ -16,17 +16,20 @@ export default function AnalyzeContent() {
 
   const demoId = searchParams.get("demo");
 
+  // Track which demo the current result belongs to; reset derived state on change.
+  const [resultDemoId, setResultDemoId] = useState<string | null>(demoId);
+  if (resultDemoId !== demoId) {
+    setResultDemoId(demoId);
+    setResult(null);
+    setError("");
+  }
+
   const demo = demoId
     ? DEMO_SCENARIOS.find((s) => s.id === demoId)
     : undefined;
 
   const initialText = demo?.content ?? "";
   const initialMode: InputMode = demo?.inputMode ?? "text";
-
-  useEffect(() => {
-    setResult(null);
-    setError("");
-  }, [demoId]);
 
   return (
     <div className="min-h-screen pb-16">

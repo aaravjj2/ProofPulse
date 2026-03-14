@@ -15,7 +15,6 @@ from .config import settings
 from .db.migrate import run_migrations
 from .routers import analyze, health, history, feedback
 
-import logging
 
 LOG_LEVELS = {"DEBUG": 0, "INFO": 10, "WARNING": 20, "ERROR": 30, "CRITICAL": 40}
 

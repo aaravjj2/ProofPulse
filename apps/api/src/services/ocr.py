@@ -29,8 +29,8 @@ async def extract_text_from_image(image_bytes: bytes) -> tuple[str, float]:
         return "", 0.0
 
     try:
-        img = Image.open(io.BytesIO(image_bytes))
-        img = img.convert("L")  # grayscale
+        img_raw = Image.open(io.BytesIO(image_bytes))
+        img: Image.Image = img_raw.convert("L")  # grayscale
         img = img.filter(ImageFilter.SHARPEN)
 
         # Try default PSM first
@@ -38,7 +38,8 @@ async def extract_text_from_image(image_bytes: bytes) -> tuple[str, float]:
             img, output_type=pytesseract.Output.DICT, config="--psm 6"
         )
         text = " ".join(
-            word for word, conf in zip(data["text"], data["conf"])
+            word
+            for word, conf in zip(data["text"], data["conf"])
             if int(conf) > 30 and word.strip()
         )
 
@@ -52,7 +53,12 @@ async def extract_text_from_image(image_bytes: bytes) -> tuple[str, float]:
 
         cleaned = _clean_ocr_text(text)
         elapsed = time.time() - start
-        logger.info("ocr_complete", chars=len(cleaned), confidence=avg_conf, ms=int(elapsed * 1000))
+        logger.info(
+            "ocr_complete",
+            chars=len(cleaned),
+            confidence=avg_conf,
+            ms=int(elapsed * 1000),
+        )
         return cleaned, round(avg_conf, 2)
 
     except Exception as e:

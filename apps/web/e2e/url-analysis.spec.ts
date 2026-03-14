@@ -22,6 +22,6 @@ test.describe("URL Analysis", () => {
     await analyzer.analyzeURL("https://phishing-site.tk/login");
 
     await expect(analyzer.resultCard).toBeVisible();
-    await expect(analyzer.riskBadge).toContainText("CRITICAL");
+    await expect(analyzer.riskBadge).toContainText("Critical Risk");
   });
 });

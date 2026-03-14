@@ -12,26 +12,74 @@ from ..db import repository
 
 logger = structlog.get_logger()
 
-SUSPICIOUS_TLDS = {".tk", ".ml", ".ga", ".cf", ".gq", ".xyz", ".pw", ".top", ".buzz", ".ru", ".cn"}
+SUSPICIOUS_TLDS = {
+    ".tk",
+    ".ml",
+    ".ga",
+    ".cf",
+    ".gq",
+    ".xyz",
+    ".pw",
+    ".top",
+    ".buzz",
+    ".ru",
+    ".cn",
+}
 
 BRAND_KEYWORDS = [
-    "amazon", "paypal", "apple", "google", "microsoft", "netflix", "chase",
-    "wellsfargo", "bankofamerica", "citibank", "facebook", "instagram",
-    "twitter", "linkedin", "dropbox", "coinbase", "venmo", "zelle",
+    "amazon",
+    "paypal",
+    "apple",
+    "google",
+    "microsoft",
+    "netflix",
+    "chase",
+    "wellsfargo",
+    "bankofamerica",
+    "citibank",
+    "facebook",
+    "instagram",
+    "twitter",
+    "linkedin",
+    "dropbox",
+    "coinbase",
+    "venmo",
+    "zelle",
 ]
 
 URL_SHORTENERS = {
-    "bit.ly", "tinyurl.com", "t.co", "goo.gl", "ow.ly", "is.gd",
-    "buff.ly", "rb.gy", "shorturl.at",
+    "bit.ly",
+    "tinyurl.com",
+    "t.co",
+    "goo.gl",
+    "ow.ly",
+    "is.gd",
+    "buff.ly",
+    "rb.gy",
+    "shorturl.at",
 }
 
 SUSPICIOUS_PATH_KEYWORDS = {
-    "login", "signin", "verify", "secure", "account", "update",
-    "confirm", "validate", "authenticate", "reset", "password",
+    "login",
+    "signin",
+    "verify",
+    "secure",
+    "account",
+    "update",
+    "confirm",
+    "validate",
+    "authenticate",
+    "reset",
+    "password",
 }
 
 HOMOGLYPHS = {
-    "o": "0", "l": "1", "i": "1", "e": "3", "a": "@", "s": "$",
+    "o": "0",
+    "l": "1",
+    "i": "1",
+    "e": "3",
+    "a": "@",
+    "s": "$",
 }
 
 
@@ -105,7 +153,11 @@ def _extract_signals(url: str) -> dict:
     # Brand typosquatting
     domain_lower = domain.lower().replace("-", "").replace(".", "")
     for brand in BRAND_KEYWORDS:
-        if brand in domain_lower and brand + ".com" not in domain and brand + ".org" not in domain:
+        if (
+            brand in domain_lower
+            and brand + ".com" not in domain
+            and brand + ".org" not in domain
+        ):
             signals["brand_impersonation"] = brand
             risk_score += 30
             break

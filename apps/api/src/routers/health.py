@@ -27,7 +27,9 @@ async def health_check():
     except Exception as e:
         logger.error("health_db_fail", error=str(e))
 
-    openai_ok = bool(settings.openai_api_key and settings.openai_api_key != "test-key-for-ci")
+    openai_ok = bool(
+        settings.openai_api_key and settings.openai_api_key != "test-key-for-ci"
+    )
 
     return HealthResponse(
         status="ok" if db_ok else "degraded",
