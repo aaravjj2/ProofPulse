@@ -35,8 +35,8 @@ export default function AnalyzeContent() {
     <div className="min-h-screen pb-16">
       <section className="py-12 px-4">
         <div className="max-w-2xl mx-auto mb-8 text-center">
-          <h1 className="text-2xl font-bold text-gray-900">Analyze Content</h1>
-          <p className="text-sm text-gray-500 mt-1">
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Analyze Content</h1>
+          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
             Paste, upload, or enter a URL below
           </p>
         </div>
@@ -56,7 +56,7 @@ export default function AnalyzeContent() {
         {error && !loading && (
           <div
             role="alert"
-            className="max-w-2xl mx-auto mt-4 p-3 bg-red-50 border border-red-200 rounded-xl text-sm text-red-700 text-center"
+            className="max-w-2xl mx-auto mt-4 p-3 bg-red-50 dark:bg-red-950 border border-red-200 dark:border-red-800 rounded-xl text-sm text-red-700 dark:text-red-400 text-center"
           >
             {error}
           </div>

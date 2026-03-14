@@ -41,7 +41,7 @@ export default function FeedbackWidget({ analysisId }: FeedbackWidgetProps) {
     return (
       <div
         data-testid="feedback-widget"
-        className="flex items-center gap-2 p-4 bg-green-50 rounded-xl border border-green-200 text-sm text-green-700"
+        className="flex items-center gap-2 p-4 bg-green-50 dark:bg-green-950 rounded-xl border border-green-200 dark:border-green-800 text-sm text-green-700 dark:text-green-400"
       >
         <Check size={16} />
         Thank you for your feedback!
@@ -52,9 +52,9 @@ export default function FeedbackWidget({ analysisId }: FeedbackWidgetProps) {
   return (
     <div
       data-testid="feedback-widget"
-      className="p-4 bg-white/80 rounded-xl border border-gray-100 space-y-3"
+      className="p-4 bg-white/80 dark:bg-gray-800/80 rounded-xl border border-gray-100 dark:border-gray-700 space-y-3"
     >
-      <h4 className="text-sm font-semibold text-gray-700">
+      <h4 className="text-sm font-semibold text-gray-700 dark:text-gray-300">
         Was this analysis helpful?
       </h4>
 
@@ -78,7 +78,7 @@ export default function FeedbackWidget({ analysisId }: FeedbackWidgetProps) {
                 "transition-colors",
                 (hoveredStar || rating) >= star
                   ? "fill-yellow-400 text-yellow-400"
-                  : "text-gray-300",
+                  : "text-gray-300 dark:text-gray-600",
               )}
             />
           </button>
@@ -92,7 +92,7 @@ export default function FeedbackWidget({ analysisId }: FeedbackWidgetProps) {
             value={comment}
             onChange={(e) => setComment(e.target.value)}
             placeholder="Optional: any additional feedback?"
-            className="w-full h-20 p-3 text-sm border border-gray-200 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-700 placeholder-gray-400 bg-white"
+            className="w-full h-20 p-3 text-sm border border-gray-200 dark:border-gray-700 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-700 dark:text-gray-300 placeholder-gray-400 dark:placeholder-gray-500 bg-white dark:bg-gray-800"
             maxLength={500}
           />
           <div className="flex items-center justify-between">
@@ -107,7 +107,7 @@ export default function FeedbackWidget({ analysisId }: FeedbackWidgetProps) {
               className={clsx(
                 "ml-auto flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg transition-colors",
                 submitting
-                  ? "bg-gray-200 text-gray-400 cursor-not-allowed"
+                  ? "bg-gray-200 dark:bg-gray-700 text-gray-400 dark:text-gray-500 cursor-not-allowed"
                   : "bg-blue-600 text-white hover:bg-blue-700",
               )}
             >

@@ -8,21 +8,21 @@ export default function AboutPage() {
         <div className="max-w-2xl mx-auto space-y-10">
           {/* Hero */}
           <div className="text-center">
-            <div className="inline-flex items-center justify-center p-3 bg-blue-50 rounded-2xl mb-4">
+            <div className="inline-flex items-center justify-center p-3 bg-blue-50 dark:bg-blue-950 rounded-2xl mb-4">
               <Shield size={32} className="text-blue-600" />
             </div>
-            <h1 className="text-3xl font-extrabold text-gray-900">
+            <h1 className="text-3xl font-extrabold text-gray-900 dark:text-gray-100">
               About ProofPulse
             </h1>
-            <p className="text-gray-500 mt-2">
+            <p className="text-gray-500 dark:text-gray-400 mt-2">
               Evidence-first scam detection you can actually trust.
             </p>
           </div>
 
           {/* What */}
-          <div className="bg-white rounded-xl border border-gray-100 p-6 space-y-3">
-            <h2 className="text-lg font-bold text-gray-900">What is ProofPulse?</h2>
-            <p className="text-sm text-gray-600 leading-relaxed">
+          <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 p-6 space-y-3">
+            <h2 className="text-lg font-bold text-gray-900 dark:text-gray-100">What is ProofPulse?</h2>
+            <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
               ProofPulse is an AI-powered trust analysis tool that helps you
               evaluate suspicious messages, screenshots, and links. Instead of
               giving you a single yes/no answer, ProofPulse provides an
@@ -32,9 +32,9 @@ export default function AboutPage() {
           </div>
 
           {/* How */}
-          <div className="bg-white rounded-xl border border-gray-100 p-6 space-y-3">
-            <h2 className="text-lg font-bold text-gray-900">How does it work?</h2>
-            <ul className="space-y-2 text-sm text-gray-600">
+          <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 p-6 space-y-3">
+            <h2 className="text-lg font-bold text-gray-900 dark:text-gray-100">How does it work?</h2>
+            <ul className="space-y-2 text-sm text-gray-600 dark:text-gray-400">
               <li className="flex items-start gap-2">
                 <span className="mt-1 w-1.5 h-1.5 rounded-full bg-blue-400 shrink-0" />
                 Submit text, a screenshot, or a URL to the analysis engine.
@@ -53,9 +53,9 @@ export default function AboutPage() {
           </div>
 
           {/* Who */}
-          <div className="bg-white rounded-xl border border-gray-100 p-6 space-y-3">
-            <h2 className="text-lg font-bold text-gray-900">Who is it for?</h2>
-            <p className="text-sm text-gray-600 leading-relaxed">
+          <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 p-6 space-y-3">
+            <h2 className="text-lg font-bold text-gray-900 dark:text-gray-100">Who is it for?</h2>
+            <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
               ProofPulse is built for anyone who encounters suspicious content
               online -- students, marketplace buyers and sellers, parents, and
               everyday internet users. If you have ever wondered whether a
@@ -65,9 +65,9 @@ export default function AboutPage() {
           </div>
 
           {/* Privacy */}
-          <div className="bg-white rounded-xl border border-gray-100 p-6 space-y-3">
-            <h2 className="text-lg font-bold text-gray-900">Privacy</h2>
-            <p className="text-sm text-gray-600 leading-relaxed">
+          <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 p-6 space-y-3">
+            <h2 className="text-lg font-bold text-gray-900 dark:text-gray-100">Privacy</h2>
+            <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
               Submitted content is processed securely and is not shared with
               third parties. Analysis history is stored to provide feedback
               loops and improve detection accuracy over time.
@@ -80,7 +80,7 @@ export default function AboutPage() {
               href="https://github.com"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-2 text-sm text-gray-500 hover:text-gray-700 transition-colors"
+              className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition-colors"
             >
               <Github size={16} />
               Source Code

@@ -25,11 +25,11 @@ export default function DemoScenarios() {
   return (
     <div className="w-full max-w-4xl mx-auto">
       <div className="text-center mb-6">
-        <h2 className="text-xl font-bold text-gray-900 flex items-center justify-center gap-2">
+        <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100 flex items-center justify-center gap-2">
           <Sparkles size={20} className="text-amber-500" />
           See ProofPulse catch scams in real time
         </h2>
-        <p className="text-sm text-gray-500 mt-1">
+        <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
           Click any demo to analyze it instantly
         </p>
       </div>
@@ -38,7 +38,7 @@ export default function DemoScenarios() {
           <Link
             key={scenario.id}
             href={`/analyze?demo=${scenario.id}`}
-            className="text-left p-4 rounded-xl border border-gray-200 bg-white hover:border-blue-300 hover:shadow-md transition-all group block"
+            className="text-left p-4 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 hover:border-blue-300 dark:hover:border-blue-600 hover:shadow-md transition-all group block"
           >
             <div className="flex items-start justify-between mb-2">
               <span
@@ -50,14 +50,14 @@ export default function DemoScenarios() {
               >
                 {CATEGORY_DISPLAY[scenario.category] || scenario.category}
               </span>
-              <span className="text-[10px] text-gray-400 uppercase">
+              <span className="text-[10px] text-gray-400 dark:text-gray-500 uppercase">
                 {scenario.inputMode}
               </span>
             </div>
-            <h3 className="text-sm font-semibold text-gray-800 group-hover:text-blue-700 transition-colors">
+            <h3 className="text-sm font-semibold text-gray-800 dark:text-gray-200 group-hover:text-blue-700 dark:group-hover:text-blue-400 transition-colors">
               {scenario.title}
             </h3>
-            <p className="text-xs text-gray-500 mt-1 line-clamp-2">
+            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 line-clamp-2">
               {scenario.description}
             </p>
           </Link>

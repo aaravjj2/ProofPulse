@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { motion, useSpring, useTransform } from "framer-motion";
+import { motion, useSpring, useTransform, useReducedMotion } from "framer-motion";
 import type { RiskLevel } from "@/lib/types";
 import { RISK_COLORS } from "@/lib/types";
 
@@ -24,16 +24,20 @@ export default function RiskScoreDonut({
   riskLevel,
   size = 120,
 }: RiskScoreDonutProps) {
+  const shouldReduce = useReducedMotion();
   const radius = (size - 12) / 2;
   const circumference = 2 * Math.PI * radius;
 
-  const springValue = useSpring(0, { stiffness: 60, damping: 20 });
+  const springValue = useSpring(0, {
+    stiffness: shouldReduce ? 200 : 60,
+    damping: shouldReduce ? 30 : 20,
+  });
   const dashOffset = useTransform(
     springValue,
     (v: number) => circumference - (v / 100) * circumference,
   );
 
-  const [displayScore, setDisplayScore] = useState(0);
+  const [displayScore, setDisplayScore] = useState(shouldReduce ? score : 0);
 
   useEffect(() => {
     springValue.set(score);
@@ -56,16 +60,14 @@ export default function RiskScoreDonut({
       aria-label={`Risk score ${score} out of 100, level ${riskLevel}`}
     >
       <svg width={size} height={size} className="-rotate-90">
-        {/* Background circle */}
         <circle
           cx={size / 2}
           cy={size / 2}
           r={radius}
           fill="none"
-          stroke="#e5e7eb"
           strokeWidth={10}
+          className="stroke-gray-200 dark:stroke-gray-700"
         />
-        {/* Animated foreground circle */}
         <motion.circle
           cx={size / 2}
           cy={size / 2}
@@ -78,14 +80,11 @@ export default function RiskScoreDonut({
           style={{ strokeDashoffset: dashOffset }}
         />
       </svg>
-      {/* Center score */}
       <div className="absolute inset-0 flex flex-col items-center justify-center">
-        <span
-          className={`text-2xl font-bold ${RISK_COLORS[riskLevel]}`}
-        >
+        <span className={`text-2xl font-bold ${RISK_COLORS[riskLevel]}`}>
           {displayScore}
         </span>
-        <span className="text-[10px] text-gray-400 uppercase tracking-wider">
+        <span className="text-[10px] text-gray-400 dark:text-gray-500 uppercase tracking-wider">
           risk
         </span>
       </div>

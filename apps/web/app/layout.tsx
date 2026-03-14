@@ -26,9 +26,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `try{const s=localStorage.getItem('proofpulse-theme');const m=window.matchMedia('(prefers-color-scheme:dark)').matches;if((s??( m?'dark':'light'))==='dark')document.documentElement.classList.add('dark')}catch{}`,
+          }}
+        />
+      </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gray-50 min-h-screen`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background text-foreground min-h-screen`}
       >
         <Providers>
           <Navbar />

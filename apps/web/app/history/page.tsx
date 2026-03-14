@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Clock, ChevronLeft, ChevronRight, Filter } from "lucide-react";
+import { Clock, ChevronLeft, ChevronRight, Filter, Download } from "lucide-react";
 import clsx from "clsx";
 import Link from "next/link";
 import { getHistory } from "@/lib/api";
@@ -36,15 +36,47 @@ export default function HistoryPage() {
 
   const totalPages = data ? Math.ceil(data.total / data.per_page) : 0;
 
+  const exportCSV = () => {
+    if (!data || data.items.length === 0) return;
+    const headers = ["ID", "Date", "Type", "Risk Level", "Risk Score", "Verdict"];
+    const rows = data.items.map((item) => [
+      item.analysis_id,
+      new Date(item.created_at).toLocaleString(),
+      item.input_type,
+      item.risk_level,
+      item.risk_score,
+      `"${item.verdict.replace(/"/g, '""')}"`,
+    ]);
+    const csv = [headers, ...rows].map((row) => row.join(",")).join("\n");
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `proofpulse-history-${new Date().toISOString().split("T")[0]}.csv`;
+    link.click();
+    URL.revokeObjectURL(url);
+  };
+
   return (
     <div className="min-h-screen pb-16">
       <section className="py-12 px-4">
         <div className="max-w-3xl mx-auto">
-          <div className="flex items-center gap-3 mb-8">
-            <Clock size={24} className="text-blue-600" />
-            <h1 className="text-2xl font-bold text-gray-900">
-              Analysis History
-            </h1>
+          <div className="flex items-center justify-between gap-3 mb-8">
+            <div className="flex items-center gap-3">
+              <Clock size={24} className="text-blue-600" />
+              <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+                Analysis History
+              </h1>
+            </div>
+            {data && data.items.length > 0 && (
+              <button
+                onClick={exportCSV}
+                className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-600 dark:text-gray-400 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+              >
+                <Download size={14} />
+                Export CSV
+              </button>
+            )}
           </div>
 
           {/* Filters */}
@@ -60,8 +92,8 @@ export default function HistoryPage() {
                 className={clsx(
                   "px-3 py-1 text-xs font-medium rounded-full transition-colors border",
                   riskFilter === value
-                    ? "bg-blue-100 text-blue-700 border-blue-200"
-                    : "bg-white text-gray-500 border-gray-200 hover:bg-gray-50",
+                    ? "bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-800"
+                    : "bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400 border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700",
                 )}
               >
                 {label}
@@ -73,7 +105,7 @@ export default function HistoryPage() {
           {isLoading && (
             <div className="text-center py-12">
               <div className="w-6 h-6 border-2 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto" />
-              <p className="text-sm text-gray-500 mt-3">
+              <p className="text-sm text-gray-500 dark:text-gray-400 mt-3">
                 Loading history...
               </p>
             </div>
@@ -83,7 +115,7 @@ export default function HistoryPage() {
           {isError && (
             <div
               role="alert"
-              className="p-4 bg-red-50 border border-red-200 rounded-xl text-sm text-red-700 text-center"
+              className="p-4 bg-red-50 dark:bg-red-950 border border-red-200 dark:border-red-800 rounded-xl text-sm text-red-700 dark:text-red-400 text-center"
             >
               {error instanceof Error
                 ? error.message
@@ -94,9 +126,9 @@ export default function HistoryPage() {
           {/* Empty state */}
           {data && data.items.length === 0 && (
             <div className="text-center py-16">
-              <Clock size={40} className="text-gray-300 mx-auto mb-3" />
-              <p className="text-gray-500 font-medium">No analyses yet</p>
-              <p className="text-sm text-gray-400 mt-1">
+              <Clock size={40} className="text-gray-300 dark:text-gray-600 mx-auto mb-3" />
+              <p className="text-gray-500 dark:text-gray-400 font-medium">No analyses yet</p>
+              <p className="text-sm text-gray-400 dark:text-gray-500 mt-1">
                 Run your first analysis to see it here.
               </p>
               <Link
@@ -131,18 +163,18 @@ export default function HistoryPage() {
                         >
                           {item.risk_level}
                         </span>
-                        <span className="text-xs text-gray-400">
+                        <span className="text-xs text-gray-400 dark:text-gray-500">
                           Score: {item.risk_score}
                         </span>
-                        <span className="text-xs text-gray-400 uppercase">
+                        <span className="text-xs text-gray-400 dark:text-gray-500 uppercase">
                           {item.input_type}
                         </span>
                       </div>
-                      <p className="text-sm text-gray-700 line-clamp-2">
+                      <p className="text-sm text-gray-700 dark:text-gray-300 line-clamp-2">
                         {item.verdict}
                       </p>
                     </div>
-                    <span className="text-xs text-gray-400 shrink-0 tabular-nums">
+                    <span className="text-xs text-gray-400 dark:text-gray-500 shrink-0 tabular-nums">
                       {new Date(item.created_at).toLocaleDateString()}
                     </span>
                   </div>
@@ -160,14 +192,14 @@ export default function HistoryPage() {
                 className={clsx(
                   "flex items-center gap-1 px-3 py-2 text-sm font-medium rounded-lg border transition-colors",
                   page === 1
-                    ? "text-gray-300 border-gray-100 cursor-not-allowed"
-                    : "text-gray-600 border-gray-200 hover:bg-gray-50",
+                    ? "text-gray-300 dark:text-gray-600 border-gray-100 dark:border-gray-700 cursor-not-allowed"
+                    : "text-gray-600 dark:text-gray-400 border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800",
                 )}
               >
                 <ChevronLeft size={14} />
                 Previous
               </button>
-              <span className="text-sm text-gray-500 tabular-nums">
+              <span className="text-sm text-gray-500 dark:text-gray-400 tabular-nums">
                 Page {page} of {totalPages}
               </span>
               <button
@@ -176,8 +208,8 @@ export default function HistoryPage() {
                 className={clsx(
                   "flex items-center gap-1 px-3 py-2 text-sm font-medium rounded-lg border transition-colors",
                   page === totalPages
-                    ? "text-gray-300 border-gray-100 cursor-not-allowed"
-                    : "text-gray-600 border-gray-200 hover:bg-gray-50",
+                    ? "text-gray-300 dark:text-gray-600 border-gray-100 dark:border-gray-700 cursor-not-allowed"
+                    : "text-gray-600 dark:text-gray-400 border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800",
                 )}
               >
                 Next
