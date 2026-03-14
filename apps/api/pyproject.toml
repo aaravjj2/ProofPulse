@@ -1,0 +1,13 @@
+[project]
+name = "proofpulse-api"
+version = "1.0.0"
+description = "ProofPulse backend API"
+requires-python = ">=3.10"
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+
+[tool.coverage.run]
+source = ["src"]
+omit = ["tests/*"]

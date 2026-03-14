@@ -1,0 +1,67 @@
+name: CI
+on: [push, pull_request]
+
+jobs:
+  backend-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+          pip install -r requirements-dev.txt
+        working-directory: apps/api
+      - name: Run tests with coverage
+        run: python -m pytest tests/ --cov=src --cov-report=xml --cov-fail-under=80 -v
+        working-directory: apps/api
+        env:
+          OPENAI_API_KEY: test-key-for-ci
+
+  frontend-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - run: npm ci
+        working-directory: apps/web
+      - run: npx tsc --noEmit
+        working-directory: apps/web
+      - run: npm run lint
+        working-directory: apps/web
+
+  e2e-test:
+    runs-on: ubuntu-latest
+    needs: [backend-test, frontend-lint]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install backend
+        run: pip install -r requirements.txt
+        working-directory: apps/api
+      - name: Install frontend
+        run: npm ci
+        working-directory: apps/web
+      - name: Install Playwright
+        run: npx playwright install --with-deps chromium
+        working-directory: apps/web
+      - name: Run E2E tests
+        run: npx playwright test
+        working-directory: apps/web
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          NEXT_PUBLIC_API_URL: http://localhost:8000
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-report
+          path: apps/web/playwright-report/

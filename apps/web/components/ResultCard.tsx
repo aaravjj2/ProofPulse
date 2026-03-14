@@ -1,103 +1,156 @@
 "use client";
 
-import { Shield, AlertTriangle, XCircle, CheckCircle, Info } from "lucide-react";
+import { motion } from "framer-motion";
+import {
+  Shield,
+  AlertTriangle,
+  XCircle,
+  CheckCircle,
+  Info,
+  Lightbulb,
+  ArrowRight,
+} from "lucide-react";
 import clsx from "clsx";
-import type { AnalysisResult } from "@/lib/types";
-import { RISK_BG_COLORS, CATEGORY_LABELS } from "@/lib/constants";
-import TrustMeter from "./TrustMeter";
-import EvidenceList from "./EvidenceList";
-import FlagsList from "./FlagsList";
-import NextSteps from "./NextSteps";
-import SafeReply from "./SafeReply";
-import FeedbackButtons from "./FeedbackButtons";
+import type { AnalysisResponse, RiskLevel } from "@/lib/types";
+import { RISK_COLORS, RISK_BG } from "@/lib/types";
+import RiskScoreDonut from "./RiskScoreDonut";
+import EvidenceSection from "./EvidenceSection";
+import FeedbackWidget from "./FeedbackWidget";
 
 interface ResultCardProps {
-  result: AnalysisResult;
+  result: AnalysisResponse;
 }
 
-const RISK_ICONS: Record<string, React.ElementType> = {
-  safe: CheckCircle,
-  low: Info,
-  medium: AlertTriangle,
-  high: AlertTriangle,
-  critical: XCircle,
+const RISK_ICONS: Record<RiskLevel, React.ElementType> = {
+  SAFE: CheckCircle,
+  LOW: Info,
+  MEDIUM: AlertTriangle,
+  HIGH: AlertTriangle,
+  CRITICAL: XCircle,
+};
+
+const RISK_LABELS: Record<RiskLevel, string> = {
+  SAFE: "Safe",
+  LOW: "Low Risk",
+  MEDIUM: "Medium Risk",
+  HIGH: "High Risk",
+  CRITICAL: "Critical Risk",
+};
+
+const BADGE_STYLES: Record<RiskLevel, string> = {
+  SAFE: "bg-green-100 text-green-700 border-green-200",
+  LOW: "bg-lime-100 text-lime-700 border-lime-200",
+  MEDIUM: "bg-yellow-100 text-yellow-700 border-yellow-200",
+  HIGH: "bg-orange-100 text-orange-700 border-orange-200",
+  CRITICAL: "bg-red-100 text-red-700 border-red-200",
 };
 
 export default function ResultCard({ result }: ResultCardProps) {
-  const Icon = RISK_ICONS[result.risk_label] || Shield;
-  const borderClass = RISK_BG_COLORS[result.risk_label] || "bg-gray-50 border-gray-200";
+  const Icon = RISK_ICONS[result.risk_level] || Shield;
 
   return (
-    <div
+    <motion.div
+      data-testid="analysis-result"
+      initial={{ opacity: 0, y: 16 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4, ease: "easeOut" }}
       className={clsx(
-        "w-full max-w-2xl mx-auto rounded-2xl border p-6 space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500",
-        borderClass
+        "w-full max-w-2xl mx-auto rounded-2xl border p-6 space-y-6",
+        RISK_BG[result.risk_level],
       )}
     >
-      {/* Header */}
-      <div className="flex items-start justify-between">
+      {/* Header: badge + donut */}
+      <div className="flex items-start justify-between gap-4">
         <div className="flex items-center gap-3">
           <div
-            className={clsx("p-2 rounded-full", {
-              "bg-green-100 text-green-600": result.risk_label === "safe",
-              "bg-lime-100 text-lime-600": result.risk_label === "low",
-              "bg-yellow-100 text-yellow-600": result.risk_label === "medium",
-              "bg-orange-100 text-orange-600": result.risk_label === "high",
-              "bg-red-100 text-red-600": result.risk_label === "critical",
-            })}
+            className={clsx(
+              "p-2 rounded-full",
+              BADGE_STYLES[result.risk_level],
+            )}
           >
             <Icon size={24} />
           </div>
           <div>
-            <h3 className="text-lg font-bold text-gray-900 capitalize">
-              {result.risk_label} Risk
-            </h3>
-            <p className="text-sm text-gray-500">
-              {CATEGORY_LABELS[result.category] || result.category} &middot;{" "}
+            <span
+              data-testid="risk-badge"
+              className={clsx(
+                "inline-block text-xs font-bold uppercase px-2.5 py-1 rounded-full border",
+                BADGE_STYLES[result.risk_level],
+              )}
+            >
+              {result.risk_level}
+            </span>
+            <p className="text-sm text-gray-500 mt-1">
               {Math.round(result.confidence * 100)}% confidence
             </p>
           </div>
         </div>
-        <TrustMeter score={result.risk_score} label={result.risk_label} />
+        <RiskScoreDonut score={result.risk_score} riskLevel={result.risk_level} />
       </div>
 
-      {/* Explanation */}
+      {/* Verdict */}
       <div className="bg-white/80 rounded-xl p-4">
-        <h4 className="text-sm font-semibold text-gray-700 mb-2">Analysis</h4>
-        <p className="text-gray-700 text-sm leading-relaxed">{result.explanation}</p>
+        <h4 className="text-sm font-semibold text-gray-700 mb-2">Verdict</h4>
+        <p
+          data-testid="verdict-text"
+          className={clsx("text-sm leading-relaxed", RISK_COLORS[result.risk_level])}
+        >
+          {result.verdict}
+        </p>
       </div>
-
-      {/* Red Flags */}
-      {result.flags.length > 0 && <FlagsList flags={result.flags} />}
 
       {/* Evidence */}
-      {result.evidence.length > 0 && <EvidenceList evidence={result.evidence} />}
+      {result.evidence.length > 0 && (
+        <EvidenceSection evidence={result.evidence} />
+      )}
 
-      {/* Next Steps */}
-      {result.next_steps.length > 0 && <NextSteps steps={result.next_steps} />}
-
-      {/* Safe Reply */}
-      {result.safe_reply && <SafeReply reply={result.safe_reply} />}
-
-      {/* OCR Info */}
-      {result.ocr_text && (
-        <div className="bg-white/80 rounded-xl p-4">
-          <h4 className="text-sm font-semibold text-gray-700 mb-2">
-            Extracted Text (OCR)
-            {result.ocr_confidence !== null && (
-              <span className="ml-2 text-xs text-gray-400 font-normal">
-                {Math.round(result.ocr_confidence * 100)}% accuracy
-              </span>
-            )}
+      {/* Recommendations */}
+      {result.recommendations.length > 0 && (
+        <div className="bg-white/80 rounded-xl p-4 space-y-2">
+          <h4 className="text-sm font-semibold text-gray-700 flex items-center gap-1.5">
+            <Lightbulb size={14} className="text-amber-500" />
+            Recommendations
           </h4>
-          <p className="text-sm text-gray-600 bg-gray-50 rounded-lg p-3 font-mono">
-            {result.ocr_text}
-          </p>
+          <ul className="space-y-1.5">
+            {result.recommendations.map((rec, idx) => (
+              <li
+                key={idx}
+                className="flex items-start gap-2 text-sm text-gray-600"
+              >
+                <span className="mt-0.5 w-1.5 h-1.5 rounded-full bg-amber-400 shrink-0" />
+                {rec}
+              </li>
+            ))}
+          </ul>
         </div>
       )}
 
+      {/* Next Steps */}
+      {result.next_steps.length > 0 && (
+        <div className="bg-white/80 rounded-xl p-4 space-y-2">
+          <h4 className="text-sm font-semibold text-gray-700 flex items-center gap-1.5">
+            <ArrowRight size={14} className="text-blue-500" />
+            Next Steps
+          </h4>
+          <ol className="space-y-1.5 list-decimal list-inside">
+            {result.next_steps.map((step, idx) => (
+              <li key={idx} className="text-sm text-gray-600">
+                {step}
+              </li>
+            ))}
+          </ol>
+        </div>
+      )}
+
+      {/* Metadata */}
+      <div className="flex items-center gap-4 text-xs text-gray-400 pt-2 border-t border-gray-200/50">
+        <span>Model: {result.model_used}</span>
+        <span>Latency: {result.latency_ms}ms</span>
+        <span>Type: {result.input_type}</span>
+      </div>
+
       {/* Feedback */}
-      <FeedbackButtons analysisId={result.id} />
-    </div>
+      <FeedbackWidget analysisId={result.analysis_id} />
+    </motion.div>
   );
 }

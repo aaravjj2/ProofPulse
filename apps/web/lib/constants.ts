@@ -6,7 +6,8 @@ export const DEMO_SCENARIOS: DemoScenario[] = [
   {
     id: "phishing-bank",
     title: '"Bank Account Locked" Phishing Text',
-    description: "A classic phishing SMS claiming your bank account is locked and urging immediate action.",
+    description:
+      "A classic phishing SMS claiming your bank account is locked and urging immediate action.",
     inputMode: "text",
     source: "sms",
     category: "phishing",
@@ -16,7 +17,8 @@ export const DEMO_SCENARIOS: DemoScenario[] = [
   {
     id: "job-scam",
     title: '"Instant Internship Offer" Recruiter Message',
-    description: "A too-good-to-be-true job offer with no experience required and guaranteed high pay.",
+    description:
+      "A too-good-to-be-true job offer with no experience required and guaranteed high pay.",
     inputMode: "text",
     source: "email",
     category: "job_scam",
@@ -26,7 +28,8 @@ export const DEMO_SCENARIOS: DemoScenario[] = [
   {
     id: "payment-scam",
     title: '"Payment Pending" Notification',
-    description: "A fake payment notification claiming a transaction needs verification.",
+    description:
+      "A fake payment notification claiming a transaction needs verification.",
     inputMode: "text",
     source: "sms",
     category: "payment_scam",
@@ -36,7 +39,8 @@ export const DEMO_SCENARIOS: DemoScenario[] = [
   {
     id: "impersonation-ceo",
     title: '"CEO Urgent Request" Email',
-    description: "An impersonation attack pretending to be a company executive.",
+    description:
+      "An impersonation attack pretending to be a company executive.",
     inputMode: "text",
     source: "email",
     category: "impersonation",
@@ -46,7 +50,8 @@ export const DEMO_SCENARIOS: DemoScenario[] = [
   {
     id: "suspicious-url",
     title: "Typosquatting Bank URL",
-    description: "A URL designed to look like a legitimate bank website but with subtle differences.",
+    description:
+      "A URL designed to look like a legitimate bank website but with subtle differences.",
     inputMode: "url",
     source: "other",
     category: "phishing",
@@ -70,12 +75,13 @@ export const DEMO_SCENARIOS: DemoScenario[] = [
     source: "chat",
     category: "payment_scam",
     content:
-      "🚀 EXCLUSIVE OFFER: Send 0.5 BTC to our wallet and receive 2.0 BTC back within 1 hour! Elon Musk approved! Limited time only - first 100 participants guaranteed. Wallet: 1A2b3C4d5E6F. Act fast, this opportunity expires tonight! Already 847 people earned big! Don't miss out!!!",
+      "EXCLUSIVE OFFER: Send 0.5 BTC to our wallet and receive 2.0 BTC back within 1 hour! Elon Musk approved! Limited time only - first 100 participants guaranteed. Wallet: 1A2b3C4d5E6F. Act fast, this opportunity expires tonight! Already 847 people earned big! Don't miss out!!!",
   },
   {
     id: "tech-support",
     title: '"Microsoft Support" Call Scam',
-    description: "A fake tech support message claiming your computer is infected.",
+    description:
+      "A fake tech support message claiming your computer is infected.",
     inputMode: "text",
     source: "other",
     category: "impersonation",
@@ -84,30 +90,16 @@ export const DEMO_SCENARIOS: DemoScenario[] = [
   },
 ];
 
-export const RISK_COLORS: Record<string, string> = {
-  safe: "#22c55e",
-  low: "#84cc16",
-  medium: "#eab308",
-  high: "#f97316",
-  critical: "#ef4444",
-};
+/** Maximum characters allowed for text analysis input. */
+export const TEXT_MAX_LENGTH = 10_000;
 
-export const RISK_BG_COLORS: Record<string, string> = {
-  safe: "bg-green-50 border-green-200",
-  low: "bg-lime-50 border-lime-200",
-  medium: "bg-yellow-50 border-yellow-200",
-  high: "bg-orange-50 border-orange-200",
-  critical: "bg-red-50 border-red-200",
-};
-
-export const CATEGORY_LABELS: Record<string, string> = {
-  phishing: "Phishing",
-  job_scam: "Job Scam",
-  payment_scam: "Payment Scam",
-  impersonation: "Impersonation",
-  misinformation: "Misinformation",
-  malware: "Malware",
-  social_engineering: "Social Engineering",
-  safe: "Safe",
-  unknown: "Unknown",
-};
+/** Loading messages shown while analysis runs. */
+export const LOADING_MESSAGES = [
+  "Scanning for red flags...",
+  "Analyzing language patterns...",
+  "Checking URLs and links...",
+  "Evaluating urgency signals...",
+  "Cross-referencing known scam patterns...",
+  "Computing risk score...",
+  "Preparing your report...",
+];

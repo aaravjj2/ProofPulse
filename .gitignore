@@ -44,6 +44,8 @@ coverage/
 htmlcov/
 .pytest_cache/
 .nyc_output/
+test-results/
+playwright-report/
 
 # Build
 *.tgz
@@ -64,3 +66,6 @@ temp/
 *.key
 secrets/
 credentials.json
+
+# Windows Zone.Identifier files
+*:Zone.Identifier

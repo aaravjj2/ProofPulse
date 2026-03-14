@@ -1,0 +1,14 @@
+{
+  "name": "proofpulse",
+  "private": true,
+  "workspaces": ["apps/*", "packages/*"],
+  "scripts": {
+    "dev": "concurrently \"npm run dev --workspace=apps/web\" \"cd apps/api && uvicorn src.main:app --reload --port 8000\"",
+    "dev:web": "npm run dev --workspace=apps/web",
+    "dev:api": "cd apps/api && uvicorn src.main:app --reload --port 8000",
+    "build": "npm run build --workspace=apps/web",
+    "test": "cd apps/api && python -m pytest tests/ -v",
+    "test:e2e": "npm run test:e2e --workspace=apps/web",
+    "lint": "npm run lint --workspace=apps/web"
+  }
+}
