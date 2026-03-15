@@ -128,6 +128,7 @@ export default function AnalysisInput({
         >
           <Tabs.Trigger
             value="text"
+            data-testid="tab-text"
             role="tab"
             aria-label="Text"
             className={clsx(
@@ -142,6 +143,7 @@ export default function AnalysisInput({
           </Tabs.Trigger>
           <Tabs.Trigger
             value="image"
+            data-testid="tab-image"
             role="tab"
             aria-label="Screenshot"
             className={clsx(
@@ -156,6 +158,7 @@ export default function AnalysisInput({
           </Tabs.Trigger>
           <Tabs.Trigger
             value="url"
+            data-testid="tab-url"
             role="tab"
             aria-label="URL"
             className={clsx(
@@ -174,6 +177,7 @@ export default function AnalysisInput({
           <Tabs.Content value="text" className="outline-none">
             <div className="relative">
               <textarea
+                data-testid="text-input"
                 value={text}
                 onChange={(e) => setText(e.target.value)}
                 placeholder="Paste a suspicious message, email, or SMS here..."
@@ -198,6 +202,7 @@ export default function AnalysisInput({
 
           <Tabs.Content value="image" className="outline-none">
             <div
+              data-testid="file-dropzone"
               onDragOver={(e) => {
                 e.preventDefault();
                 setDragOver(true);
@@ -219,7 +224,7 @@ export default function AnalysisInput({
                 className={file ? "text-green-500" : "text-gray-400 dark:text-gray-500"}
               />
               <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
-                {file ? file.name : "Drop a screenshot or click to upload"}
+                {file ? <span data-testid="file-preview">{file.name}</span> : "Drop a screenshot or click to upload"}
               </p>
               <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">
                 PNG, JPG, WebP (max 10MB)
@@ -236,6 +241,7 @@ export default function AnalysisInput({
 
           <Tabs.Content value="url" className="outline-none">
             <input
+              data-testid="url-input"
               type="url"
               value={url}
               onChange={(e) => setUrl(e.target.value)}
@@ -262,6 +268,7 @@ export default function AnalysisInput({
           <div className="flex gap-2">
             {hasContent && (
               <button
+                data-testid="clear-button"
                 role="button"
                 aria-label="Clear"
                 onClick={handleClear}
@@ -272,6 +279,7 @@ export default function AnalysisInput({
               </button>
             )}
             <button
+              data-testid="analyze-button"
               role="button"
               aria-label="Analyze"
               onClick={handleSubmit}

@@ -8,6 +8,7 @@ export default defineConfig({
   reporter: [["html", { outputFolder: "playwright-report" }]],
   use: {
     baseURL: "http://localhost:3000",
+    headless: false,
     trace: "on-first-retry",
     screenshot: "only-on-failure",
     video: "on-first-retry",
@@ -17,7 +18,7 @@ export default defineConfig({
   ],
   webServer: [
     {
-      command: "cd ../api && OPENAI_API_KEY=test-key python -m uvicorn src.main:app --port 8001",
+      command: "cd ../api && . .venv/bin/activate && OPENAI_API_KEY=test-key python -m uvicorn src.main:app --port 8001",
       url: "http://localhost:8001/api/v1/health",
       reuseExistingServer: true,
       timeout: 30000,

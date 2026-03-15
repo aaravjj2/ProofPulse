@@ -1,6 +1,5 @@
-import { test, expect } from '@playwright/test';
+import { test } from '@playwright/test';
 import fs from 'fs';
-import path from 'path';
 
 // Ensure screenshots directory exists
 const screenshotDir = '/home/aarav/Aarav/ProofPulse/docs/screenshots';

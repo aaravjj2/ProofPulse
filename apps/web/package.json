@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "test:e2e": "npx playwright test",
+    "test:e2e:ci": "npx playwright test --config=playwright.ci.config.ts"
   },
   "dependencies": {
     "@radix-ui/react-accordion": "^1.2.12",

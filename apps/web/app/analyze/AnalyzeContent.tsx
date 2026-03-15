@@ -67,6 +67,18 @@ export default function AnalyzeContent() {
         {result && !loading && (
           <div className="mt-8">
             <ResultCard result={result} />
+            <div className="flex justify-center mt-6">
+              <button
+                data-testid="analyze-another-button"
+                onClick={() => {
+                  setResult(null);
+                  setError("");
+                }}
+                className="px-6 py-3 text-sm font-medium text-blue-600 dark:text-blue-400 border border-blue-200 dark:border-blue-800 rounded-xl hover:bg-blue-50 dark:hover:bg-blue-950 transition-colors"
+              >
+                Analyze Another
+              </button>
+            </div>
           </div>
         )}
       </section>

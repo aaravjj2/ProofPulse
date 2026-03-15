@@ -125,7 +125,7 @@ export default function HistoryPage() {
 
           {/* Empty state */}
           {data && data.items.length === 0 && (
-            <div className="text-center py-16">
+            <div data-testid="history-empty-state" className="text-center py-16">
               <Clock size={40} className="text-gray-300 dark:text-gray-600 mx-auto mb-3" />
               <p className="text-gray-500 dark:text-gray-400 font-medium">No analyses yet</p>
               <p className="text-sm text-gray-400 dark:text-gray-500 mt-1">

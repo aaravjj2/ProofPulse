@@ -41,10 +41,11 @@ export default function FeedbackWidget({ analysisId }: FeedbackWidgetProps) {
     return (
       <div
         data-testid="feedback-widget"
+        data-feedback-state="success"
         className="flex items-center gap-2 p-4 bg-green-50 dark:bg-green-950 rounded-xl border border-green-200 dark:border-green-800 text-sm text-green-700 dark:text-green-400"
       >
         <Check size={16} />
-        Thank you for your feedback!
+        <span data-testid="feedback-success">Thank you for your feedback!</span>
       </div>
     );
   }
@@ -65,6 +66,7 @@ export default function FeedbackWidget({ analysisId }: FeedbackWidgetProps) {
             key={star}
             type="button"
             role="radio"
+            data-testid={`feedback-star-${star}`}
             aria-checked={rating === star}
             aria-label={`${star} star${star > 1 ? "s" : ""}`}
             onClick={() => setRating(star)}
@@ -102,6 +104,7 @@ export default function FeedbackWidget({ analysisId }: FeedbackWidgetProps) {
               </p>
             )}
             <button
+              data-testid="feedback-submit"
               onClick={handleSubmit}
               disabled={submitting}
               className={clsx(

@@ -190,6 +190,7 @@ export default function ResultCard({ result }: ResultCardProps) {
         <span>Latency: {result.latency_ms}ms</span>
         <span>Type: {result.input_type}</span>
         <button
+          data-testid="copy-report-button"
           onClick={handleCopy}
           className="ml-auto flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 border border-gray-200 dark:border-gray-700 rounded-lg transition-colors hover:bg-gray-50 dark:hover:bg-gray-800"
         >

@@ -17,7 +17,7 @@ export default function Navbar() {
   const { theme, toggle } = useTheme();
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border-b border-gray-200 dark:border-gray-700">
+    <nav data-testid="navbar" className="fixed top-0 left-0 right-0 z-50 bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border-b border-gray-200 dark:border-gray-700">
       <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-2" aria-label="ProofPulse home">
           <Shield size={24} className="text-blue-600" />
@@ -29,6 +29,7 @@ export default function Navbar() {
             <Link
               key={href}
               href={href}
+              data-testid={`nav-link-${label.toLowerCase()}`}
               className={clsx(
                 "flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium transition-colors",
                 pathname === href
@@ -41,6 +42,7 @@ export default function Navbar() {
             </Link>
           ))}
           <button
+            data-testid="theme-toggle"
             onClick={toggle}
             suppressHydrationWarning
             aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
