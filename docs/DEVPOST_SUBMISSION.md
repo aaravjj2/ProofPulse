@@ -113,9 +113,9 @@ The UX payoff: users see the *exact same reasoning* a trained fraud analyst woul
 **Infrastructure:** Docker, docker-compose, GitHub Actions, Railway, Vercel, SQLite, Nixpacks
 
 ## Links
-- **Live Demo:** https://proofpulse.vercel.app
+- **Live Demo:** https://proofpulse-green.vercel.app
 - **GitHub Repo:** https://github.com/aaravjj2/ProofPulse
-- **API Docs:** https://proofpulse-api.up.railway.app/docs
+- **API Docs:** https://proofpulse-production.up.railway.app/docs
 - **Demo Video:** [link after recording]
 
 ---
